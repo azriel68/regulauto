@@ -21,21 +21,18 @@ var TSpeciale=[];
 var regul = {};
 var distanceCadenceur = 0;
 var moyenneCadenceur = 0;
-var my_tick_sound = new Media("./audio/tick.wav",
-        // success callback
-        function () {
-//            console.log("playAudio():Audio Success");
-        },
-        // error callback
-        function (err) {
-//            console.log("playAudio():Audio Error: " + err);
-        }
-    );
+var my_tick_sound = {};
 
 
+document.addEventListener("deviceready", onDeviceReady, false);
+function onDeviceReady() {
+    console.log(navigator.vibrate(3000) );
+}
 
 $(document).ready(function() {
 	
+    if (typeof Media != 'undefined') { my_tick_sound = new Media("audio/tick.wav"); }
+
     regul.indexedDB.db = null;
     regul.indexedDB.open("regul", function() {
     	regul.indexedDB.getAll('speciale', TSpeciale, refreshListeSpeciale);
@@ -370,7 +367,7 @@ function updateDistance(periods) {
 }
 
 function playTick() {
-	my_tick_sound.play();
+/*	my_tick_sound.play();*/
 }
 
 function dateDiff(date1, date2){
