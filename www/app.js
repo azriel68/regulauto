@@ -21,6 +21,18 @@ var TSpeciale=[];
 var regul = {};
 var distanceCadenceur = 0;
 var moyenneCadenceur = 0;
+var my_tick_sound = new Media("./audio/tick.wav",
+        // success callback
+        function () {
+//            console.log("playAudio():Audio Success");
+        },
+        // error callback
+        function (err) {
+//            console.log("playAudio():Audio Error: " + err);
+        }
+    );
+
+
 
 $(document).ready(function() {
 	
@@ -351,9 +363,14 @@ function updateDistance(periods) {
 				
 		$('#cadenceur div[rel=distance]').html((Math.round(distanceCadenceur*100) / 100)+"km");
 		
-		document.getElementById('audiotick').play();
+
+		playTick();
 	}
 	
+}
+
+function playTick() {
+	my_tick_sound.play();
 }
 
 function dateDiff(date1, date2){
