@@ -1,0 +1,18 @@
+#pointage_heure_arrivee, #pointage_etat_ar,#etalonnage_indice {
+	font-size: 36px;
+	font-weight: bold;
+}
+
+.big {
+	font-size: 36px;
+	font-weight: bold;
+	text-align: center;
+	padding:20px;
+}
+
+.biggest {
+	font-size: 48px;
+	font-weight: bold;
+	text-align: center;
+	padding:20px;
+}
