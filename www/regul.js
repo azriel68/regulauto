@@ -340,6 +340,7 @@ function setCadence(itemid, cadenceid, noblockcounter) {
 			dStart = new Date();
 			
 			distanceCadenceur = 0;
+			distanceCadenceurTick = 0;
 			moyenneCadenceur = cadence.moyenne;
 			
 			$('#cadenceur div[rel=time]').countdown('destroy');
@@ -368,9 +369,9 @@ function updateDistance(periods) {
 		km_per_sec = moyenneCadenceur / 3600; 
 		distanceCadenceur = distanceCadenceur+km_per_sec;
 				
-		$('#cadenceur div[rel=distance]').html((Math.round(distanceCadenceur*100) / 100)+"km");
+		$('#cadenceur div[rel=distance]').html((Math.round(distanceCadenceur*100) / 100)+"km ("+distanceCadenceurTick+")");
 		
-		if(distanceCadenceur>=distanceCadenceurTick) {
+		if(Math.round(distanceCadenceurTick*100)<=Math.round(distanceCadenceur*100)) {
 			soundPlay();	
 			distanceCadenceurTick+=.1;
 		}

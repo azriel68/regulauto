@@ -46,6 +46,7 @@
 /var/www/test/regulauto/platforms/android/assets/www/images/splash.png \
 /var/www/test/regulauto/platforms/android/assets/www/audio/tick.wav \
 /var/www/test/regulauto/platforms/android/assets/www/audio/tick.mp3 \
+/var/www/test/regulauto/platforms/android/assets/www/audio/beep.mp3 \
 /var/www/test/regulauto/platforms/android/assets/www/audio/mp5.mp3 \
 /var/www/test/regulauto/platforms/android/assets/www/jq/images \
 /var/www/test/regulauto/platforms/android/assets/www/jq/lz-string-1.3.3-min.js \
