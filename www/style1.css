@@ -16,3 +16,26 @@
 	text-align: center;
 	padding:20px;
 }
+body {
+    background: url(images/back.png);
+    background-repeat:repeat-y;
+    background-position:center center;
+    background-attachment:scroll;
+   background-size: cover;
+}
+.ui-page {
+    background: transparent;
+}
+.ui-content{
+    background: transparent;
+}
+#tableMoy {
+	width:100%; 
+	background: white; 
+	
+	border-collapse: collapse;
+}
+#tableMoy td {
+	border:1px solid black;
+	padding:0 20px;
+}

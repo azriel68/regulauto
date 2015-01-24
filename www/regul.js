@@ -25,9 +25,13 @@ var distanceCadenceurTick = 0;
 var moyenneCadenceur = 0;
 var my_tick_sound={};  
 
+if (navigator.appVersion.indexOf("Linux")!=-1){
+	$(document).ready(startRegul());
+}
+
 function startRegul() {
 	
-    my_tick_sound = new Media('/android_asset/www/audio/beep.mp3');
+   if(typeof Media != 'undefined') { my_tick_sound = new Media('/android_asset/www/audio/beep.mp3'); }
 
     
     MyIndexedDB.open("regul", function() {
@@ -241,8 +245,51 @@ function soundPlay() {
 /*	var myMedia = new Media("http://audio.ibeat.org/content/p1rj1s/p1rj1s_-_rockGuitar.mp3");
   	myMedia.play({ numberOfLoops: 2 });*/
 	
-	my_tick_sound.play();
+	if(typeof Media != 'undefined') { my_tick_sound.play(); }
 
+}
+function tableMoyenne(item) {
+	
+	/* peuple la table des moyennes */
+	
+	$('#tableMoy tr.ligne').remove();
+	
+	
+	var d=new Date();
+	
+	var km=0; var nb_sec=0;
+	$.each(item.TCadence,function(i, cadence) {
+		
+		
+		for(iCad=0;iCad<=cadence.distance;iCad+=100) {
+			
+			var distance = km+parseFloat(iCad / 1000);
+			
+			//100÷(86,5× 1000÷3600)
+			var second_per_100m = 100 / parseFloat(cadence.moyenne * 1000 / 3600);
+			//cadence.moyenne
+			$('#tableMoy').append('<tr class="ligne"><td>'+(Math.round(distance*100)/100).toFixed(1)+'</td><td>'+parseFloat(cadence.moyenne).toFixed(2)+'</td><td align="center">'+toHHMMSS(nb_sec)+'</td></tr>');	
+			
+			nb_sec+=second_per_100m ;
+			
+		}
+		
+		km+=parseFloat(cadence.distance)/1000;
+	});
+	
+	
+}
+
+function toHHMMSS (sec_num) {
+    var hours   = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = parseInt(sec_num - (hours * 3600) - (minutes * 60));
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    var time    = hours+':'+minutes+':'+seconds;
+    return time;
 }
 
 function addEtape(item) {
@@ -317,6 +364,8 @@ function refreshListeCadence(item) {
 	    $ul.listview();
 	}
 	
+	tableMoyenne(item);
+	
 	$ul.find('li.cadence a.cadence').click(function() {
 		itemid = $(this).attr('itemid');
 		cadenceid=$(this).attr('cadenceid');
@@ -347,13 +396,17 @@ function refreshListeCadence(item) {
 }
 
 function setCadence(itemid, cadenceid, noblockcounter) {
+	$('#cadenceur').attr('itemid',itemid);
+	$('#cadenceur').attr('cadenceid',cadenceid);
 	
 	MyIndexedDB.getItem('speciale', itemid, function(item) {
 			cadence = item.TCadence[cadenceid];
 			
-			if(! (cadenceid+1) in item.TCadence){
-				$('#cadenceur input[name=next-etape]').hide();
+			if(!typeof item.TCadence[parseInt(cadenceid)+1] == 'undefined'){
+				$('#cadenceur input[name=next-etape]').closest('.ui-btn').hide();
 			}
+			
+			$('#cadenceur div[rel=distance]').html('--');
 			
 			$('#cadenceur div[rel=vitesse]').html(cadence.moyenne+'km/h');
 			
@@ -389,7 +442,7 @@ function updateDistance(periods) {
 		km_per_sec = moyenneCadenceur / 3600; 
 		distanceCadenceur = distanceCadenceur+km_per_sec;
 				
-		$('#cadenceur div[rel=distance]').html((Math.round(distanceCadenceur*100) / 100)+"km");
+		$('#cadenceur div[rel=distance]').html((Math.round(distanceCadenceur*1000) / 1000).toFixed(3)+"km");
 		
 		if(Math.round(distanceCadenceurTick*100)<=Math.round(distanceCadenceur*100)) {
 			soundPlay();	
