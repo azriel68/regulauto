@@ -207,9 +207,29 @@ function startRegul() {
     	
     });
       
+      
+    $('#speciale input[name=zone]').change(function() {
+    	$('#speciale input[name=zone_km]').val($(this).val()/1000);
+    });
+      
+    $('#speciale input[name=zone_km]').change(function() {
+    	$('#speciale input[name=zone]').val($(this).val()*1000);
+    });
+      
+    $('#cadenceur input[name=pause-etape]').closest('.ui-btn').hide();
     $('#cadenceur input[name=start-etape]').click(function() {
     	$('#cadenceur div[rel=time]').countdown('resume');
+    	$('#cadenceur input[name=pause-etape]').closest('.ui-btn').show();
+    	$(this).closest('.ui-btn').hide();
     });
+    $('#cadenceur input[name=pause-etape]').click(function() {
+    	$('#cadenceur div[rel=time]').countdown('pause');
+    	
+    	$('#cadenceur input[name=start-etape]').closest('.ui-btn').show();
+    	$(this).closest('.ui-btn').hide();
+    	
+    });
+     
      
     $('#cadenceur input[name=next-etape]').click(function() {
     	setCadence($('#cadenceur').attr('itemid'), parseInt( $('#cadenceur').attr('cadenceid') ) +1, true);
@@ -369,7 +389,7 @@ function updateDistance(periods) {
 		km_per_sec = moyenneCadenceur / 3600; 
 		distanceCadenceur = distanceCadenceur+km_per_sec;
 				
-		$('#cadenceur div[rel=distance]').html((Math.round(distanceCadenceur*100) / 100)+"km ("+distanceCadenceurTick+")");
+		$('#cadenceur div[rel=distance]').html((Math.round(distanceCadenceur*100) / 100)+"km");
 		
 		if(Math.round(distanceCadenceurTick*100)<=Math.round(distanceCadenceur*100)) {
 			soundPlay();	
