@@ -21,12 +21,13 @@ This file is part of Regulauto.
 var TSpeciale=[];
 var regul = {}; // create fucking object !
 var distanceCadenceur = 0;
+var distanceCadenceurTick = 0; 
 var moyenneCadenceur = 0;
 var my_tick_sound={};  
 
 function startRegul() {
 	
-    my_tick_sound = new Media('/android_asset/www/audio/mp5.mp3');
+    my_tick_sound = new Media('/android_asset/www/audio/tick.mp3');
 
     
     MyIndexedDB.open("regul", function() {
@@ -193,9 +194,16 @@ function startRegul() {
     		,TCadence:[]
     	};
     	
-    	TSpeciale.push(item);
-    	
-    	MyIndexedDB.addItem('speciale', item, refreshListeSpeciale);
+    	if(item.label=='') {
+    		window.alert('Attention, le nom est vide');
+    		
+    	}
+    	else{
+	    	TSpeciale.push(item);
+	    	
+	    	MyIndexedDB.addItem('speciale', item, refreshListeSpeciale);
+    		
+    	}
     	
     });
       
@@ -362,14 +370,13 @@ function updateDistance(periods) {
 				
 		$('#cadenceur div[rel=distance]').html((Math.round(distanceCadenceur*100) / 100)+"km");
 		
-
-		playTick();
+		if(distanceCadenceur>distanceCadenceurTick) {
+			soundPlay();	
+			distanceCadenceurTick+=.1;
+		}
+		
 	}
 	
-}
-
-function playTick() {
-/*	my_tick_sound.play();*/
 }
 
 function dateDiff(date1, date2){

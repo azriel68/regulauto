@@ -17,25 +17,21 @@ This file is part of Regulauto.
     Author azriel68@gmail.com
  */
 
+
 var TSpeciale=[];
-var regul = {};
+var regul = {}; // create fucking object !
 var distanceCadenceur = 0;
+var distanceCadenceurTick = 0; 
 var moyenneCadenceur = 0;
-var my_tick_sound = {};
+var my_tick_sound={};  
 
-
-document.addEventListener("deviceready", onDeviceReady, false);
-function onDeviceReady() {
-    console.log(navigator.vibrate(3000) );
-}
-
-$(document).ready(function() {
+function startRegul() {
 	
-    if (typeof Media != 'undefined') { my_tick_sound = new Media("audio/tick.wav"); }
+    my_tick_sound = new Media('/android_asset/www/audio/beep.mp3');
 
-    regul.indexedDB.db = null;
-    regul.indexedDB.open("regul", function() {
-    	regul.indexedDB.getAll('speciale', TSpeciale, refreshListeSpeciale);
+    
+    MyIndexedDB.open("regul", function() {
+    	MyIndexedDB.getAll('speciale', TSpeciale, refreshListeSpeciale);
     });
   
  	$('#config').page({
@@ -177,7 +173,7 @@ $(document).ready(function() {
     		 var id = $("#speciale").attr('itemid');
     		
     		 $('ul#listeSpeciale li.speciale[itemid='+id+']').remove();
-    		 regul.indexedDB.deleteItem('speciale', id);
+    		 MyIndexedDB.deleteItem('speciale', id);
     		 $.mobile.changePage('#home');
     	}
     	
@@ -185,22 +181,29 @@ $(document).ready(function() {
      
     $('input[name=add-etape]').click(function(){
     	
-    	regul.indexedDB.getItem( 'speciale', id, addEtape );
+    	MyIndexedDB.getItem( 'speciale', id, addEtape );
     	
     });
     
     $('input[name=add-speciale]').click(function(){
-    	var newId = regul.indexedDB.getNewId('speciale');
+    	var newId = MyIndexedDB.getNewId('speciale');
     	
     	item={
-    		id:regul.indexedDB.getNewId('speciale')
+    		id:MyIndexedDB.getNewId('speciale')
     		,label:$('input[name=new-speciale-name]').val()
     		,TCadence:[]
     	};
     	
-    	TSpeciale.push(item);
-    	
-    	regul.indexedDB.addItem('speciale', item, refreshListeSpeciale);
+    	if(item.label=='') {
+    		window.alert('Attention, le nom est vide');
+    		
+    	}
+    	else{
+	    	TSpeciale.push(item);
+	    	
+	    	MyIndexedDB.addItem('speciale', item, refreshListeSpeciale);
+    		
+    	}
     	
     });
       
@@ -213,7 +216,14 @@ $(document).ready(function() {
     });
      
      
-});
+}
+function soundPlay() {
+/*	var myMedia = new Media("http://audio.ibeat.org/content/p1rj1s/p1rj1s_-_rockGuitar.mp3");
+  	myMedia.play({ numberOfLoops: 2 });*/
+	
+	my_tick_sound.play();
+
+}
 
 function addEtape(item) {
 	
@@ -224,7 +234,7 @@ function addEtape(item) {
 	
 	item.TCadence.push(etape);
 	
-	regul.indexedDB.addItem('speciale',item,refreshListeCadence);
+	MyIndexedDB.addItem('speciale',item,refreshListeCadence);
 	
 	
 }
@@ -264,7 +274,7 @@ function refreshListeSpeciale() {
 		
 		$('#speciale').attr('itemid', id);
 		
-		regul.indexedDB.getItem( 'speciale', id, refreshListeCadence );
+		MyIndexedDB.getItem( 'speciale', id, refreshListeCadence );
 		
 		
 	});
@@ -304,10 +314,10 @@ function refreshListeCadence(item) {
 		
 		if(window.confirm("Supprimer cette cadence ?")) {
 			
-			regul.indexedDB.getItem('speciale', itemid, function(item) {
+			MyIndexedDB.getItem('speciale', itemid, function(item) {
 				item.TCadence.splice(cadenceid,1);
 				
-				regul.indexedDB.addItem('speciale', item, refreshListeCadence(item));
+				MyIndexedDB.addItem('speciale', item, refreshListeCadence(item));
 			});
 			
 		}
@@ -318,7 +328,7 @@ function refreshListeCadence(item) {
 
 function setCadence(itemid, cadenceid, noblockcounter) {
 	
-	regul.indexedDB.getItem('speciale', itemid, function(item) {
+	MyIndexedDB.getItem('speciale', itemid, function(item) {
 			cadence = item.TCadence[cadenceid];
 			
 			if(! (cadenceid+1) in item.TCadence){
@@ -360,14 +370,13 @@ function updateDistance(periods) {
 				
 		$('#cadenceur div[rel=distance]').html((Math.round(distanceCadenceur*100) / 100)+"km");
 		
-
-		playTick();
+		if(distanceCadenceur>=distanceCadenceurTick) {
+			soundPlay();	
+			distanceCadenceurTick+=.1;
+		}
+		
 	}
 	
-}
-
-function playTick() {
-/*	my_tick_sound.play();*/
 }
 
 function dateDiff(date1, date2){

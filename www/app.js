@@ -35,9 +35,9 @@ var app = {
     onDeviceReady: function() {
     	//navigator.notification.vibrate(500);
     	
-    	window.alert = function (txt) {
+    	/*window.alert = function (txt) {
  		  navigator.notification.alert(txt, null, "Attention", "Close");
-		};
+		};*/
     	
     	startRegul();
        console.log("READY!");

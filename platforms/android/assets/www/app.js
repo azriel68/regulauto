@@ -33,7 +33,12 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-    	navigator.notification.vibrate(500);
+    	//navigator.notification.vibrate(500);
+    	
+    	/*window.alert = function (txt) {
+ 		  navigator.notification.alert(txt, null, "Attention", "Close");
+		};*/
+    	
     	startRegul();
        console.log("READY!");
     }
